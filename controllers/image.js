@@ -1,15 +1,8 @@
 var fs = require('fs'),
     path = require('path');
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
-
-mongoose.connect('mongodb://localhost:27017/kidsAcademy');
-mongoose.connection.on('open', function () {
-    console.log('Mongoose connected.');
-});
-
-var Image = new Schema({
+var Mongoose = require('./connection');
+var Image = new Mongoose.getConnection().Schema({
     src: { type: String },
     title: { type: String },
     description: { type: String },
@@ -17,7 +10,7 @@ var Image = new Schema({
     subcategory: { type: String }
 });
 
-var ImageModel = mongoose.model('Image', Image);
+var ImageModel = Mongoose.getConnection().model('Image', Image);
 var baseUrl = '/api/v1/images/';
 
 // var db, MongoClient = require('mongodb').MongoClient;
@@ -44,7 +37,7 @@ module.exports = {
         });
     },
     create: function (req, res) {
-        if (req.body.usr != '5954c955ea3f273671b83d1d') {
+        if (req.session.user.admin != true) {
             res.json(500, { error: 'You are not allowed to upload.' });
         }
         var saveImage = function () {
@@ -97,6 +90,9 @@ module.exports = {
         res.send('The image:like POST controller');
     },
     comment: function (req, res) {
+        res.send('The image:comment POST controller');
+    },
+    getConnection: function (req, res) {
         res.send('The image:comment POST controller');
     }
 };
