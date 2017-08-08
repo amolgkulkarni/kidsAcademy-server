@@ -78,7 +78,7 @@ module.exports = {
         }
         AccountModel.findOne({ email: newData.email }, function (e, o) {
             if (o) {
-                res.status(400).send('duplicate');
+                res.status(400).send({data: 'duplicate'});
             } else {
                 saltAndHash(newData.pass, function (hash) {
                     newData.pass = hash;
@@ -88,7 +88,7 @@ module.exports = {
                         if (e) {
                             res.status(400).send(e);
                         } else {
-                            res.status(200).send('ok');
+                            res.status(200).send({data: 'ok'});
                         }
                     });
                 });

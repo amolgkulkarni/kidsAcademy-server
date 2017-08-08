@@ -32,17 +32,18 @@ module.exports = {
     },
 
     login: function (req, res) {
+        //res.header("Access-Control-Allow-Origin", "*");
         // check if the user's credentials are saved in a cookie //
         if (req.cookies.user == undefined || req.cookies.pass == undefined) {
-            res.status(200).send('logout');
+            res.status(200).send({data: 'logout'});
         } else {
             // attempt automatic login //
             AM.autoLogin(req.cookies.user, req.cookies.pass, function (o) {
                 if (o != null) {
                     req.session.user = o;
-                    res.status(200).send('Logged In automatically.');
+                    res.status(200).send({data: 'Logged In automatically.'});
                 } else {
-                    res.status(200).send('timeout');
+                    res.status(200).send({data: 'timeout'});
                 }
             });
         }
