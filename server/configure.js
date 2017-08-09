@@ -3,11 +3,13 @@ var path = require('path'),
     express = require('express'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
+    session = require('express-session'),
     morgan = require('morgan'),
     methodOverride = require('method-override'),
     errorHandler = require('errorhandler'),
     routes = require('./../router/routes'),
-    output = require('./../middleware/output');
+    output = require('./../middleware/output'),
+    MongoStore = require('connect-mongo')(session);
 multer = require('multer');
 
 module.exports = function (app) {
@@ -20,9 +22,24 @@ module.exports = function (app) {
             'public/upload/temp')
     }).any());
     app.use(methodOverride());
-    app.use(cookieParser('some-secret-value-here'));
-    routes(app);//moving the routes to routes folder.
+    app.use(cookieParser());
+
+    var dbURL = 'mongodb://localhost:27017/kidsAcademy';
+    if (app.get('env') == 'live') {
+        // prepend url with authentication credentials //
+        dbURL = 'mongodb://' + process.env.DB_USER + ':' + process.env.DB_PASS + '@' + dbHost + ':' + dbPort + '/' + dbName;
+    }
+    app.use(session({
+        secret: 'faeb4453e5d14fe6f6d04637f78077c76c73d1b4',
+        //proxy: true,
+        resave: false,
+        saveUninitialized: true,
+        cookie: {secure: false, maxAge: 20000},
+        store: new MongoStore({ url: dbURL })
+    })
+    );
     output(app);
+    routes(app);//moving the routes to routes folder.
 
     app.use(function (req, res, next) {
         res.setHeader("Cache-Control", "public, max-age=3600");

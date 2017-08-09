@@ -34,7 +34,7 @@ var saltAndHash = function (pass, callback) {
 }
 
 module.exports = {
-    autoLogin: function (user, pass, cb) {
+    autoLogin: function (email, pass, cb) {
         AccountModel.findOne({ email: email, active: true }, function (e, o) {
             if (o) {
                 o.pass == pass ? cb(o) : cb(null);
@@ -53,8 +53,9 @@ module.exports = {
                     if (valid) {
                         req.session = req.session || {};
                         req.session.user = o;
+                        //req.session.save();
                         if (req.body['remember-me'] == 'true') {
-                            res.cookie('user', o.name, { maxAge: 900000 });
+                            res.cookie('email', o.email, { maxAge: 900000 });
                             res.cookie('pass', o.pass, { maxAge: 900000 });
                         }
                         res.status(200).send({name: o.name, admin: o.admin});
