@@ -34,7 +34,7 @@ module.exports = function (app) {
         //proxy: true,
         resave: false,
         saveUninitialized: true,
-        cookie: {secure: false, maxAge: 20000},
+        cookie: {secure: false, maxAge: 1800000},
         store: new MongoStore({ url: dbURL })
     })
     );

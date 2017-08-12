@@ -62,15 +62,16 @@ module.exports = {
                         var newUser = new ImageModel({
                             src: 'assets/gallery/' + imgUrl + ext,
                             title: req.body.title,
-                            category: req.body.category,
-                            subcategory: req.body.subcategory,
+                            category: req.body.category.toLowerCase(),
+                            subcategory: req.body.subcategory.toLowerCase(),
                             description: req.body.description
                         });
                         newUser.save(function (err, product, numAffected) {
                             if (err) { throw err; }
                             fs.rename(tempPath, targetPath, function (err) {
                                 if (err) throw err;
-                                res.send('The image:create POST controller');
+                                res.status(204).send({});
+                                //res.send('Image Added');
                             });
 
                         });
@@ -78,7 +79,7 @@ module.exports = {
                 });
             } else {
                 fs.unlink(tempPath, function () {
-                    if (err) throw err;
+                    //if (err) throw err;
                     res.json(500, { error: 'Only image files are allowed.' });
                 });
             }

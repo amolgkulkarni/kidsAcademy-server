@@ -75,7 +75,8 @@ module.exports = {
             name: req.body['name'],
             email: req.body['email'],
             pass: req.body['pass'],
-            admin: req.body['admin']
+            admin: req.body['admin'],
+            license: req.body['license']
         }
         AccountModel.findOne({ email: newData.email }, function (e, o) {
             if (o) {
